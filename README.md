@@ -3,7 +3,6 @@
 Not sure it's needed should just use VITE
 
 ```html
-<!--Double script for localhost vs cdn-->
 <script>
   function onErrorLoader() {
     const script = document.createElement("script");
