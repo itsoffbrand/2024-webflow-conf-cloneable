@@ -34123,7 +34123,7 @@ void main() {
   var baseUrl = "https://2024-webflow-conf-cloneable.vercel.app/";
   var ASSETS = {
     //   img: null,
-    cube: baseUrl + "/cube.glb"
+    cube: baseUrl + "/build/cube.glb"
   };
 
   // src/gl/util/loader.js
