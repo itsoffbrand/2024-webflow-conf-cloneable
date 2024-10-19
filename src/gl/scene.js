@@ -5,6 +5,8 @@ import { DomNode } from "./domNode.js";
 import { DomCube } from "./cube.js";
 import { Plane } from "./plane.js";
 
+import { loadAssets } from "./util/loader.js";
+
 export default class extends Scene {
   constructor(vp, {} = {}) {
     super();
@@ -13,7 +15,8 @@ export default class extends Scene {
     queueMicrotask(() => this.create());
   }
 
-  create() {
+  async create() {
+    await this.load();
     const items = [...document.querySelectorAll("[data-item]")];
 
     console.log(items[1]);
@@ -25,6 +28,11 @@ export default class extends Scene {
     // this.add(...this.items);
 
     this.add(this.cube, this.plane);
+  }
+
+  async load() {
+    const assets = await loadAssets();
+    console.log({ assets });
   }
 
   render(t) {
