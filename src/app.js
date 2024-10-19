@@ -19,6 +19,7 @@ class App {
   init() {
     this.scroll = new Scroll();
     this.dom = new Dom();
+
     this.gl = Gl;
 
     this.initEvents();

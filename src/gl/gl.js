@@ -1,5 +1,6 @@
 import { WebGLRenderer, PerspectiveCamera } from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import "../util/gui.js";
 
 import Scene from "./scene.js";
 
@@ -9,7 +10,7 @@ class Gl {
   constructor(sel) {
     this.renderer = new WebGLRenderer({
       antialias: true,
-      // alpha: true,
+      alpha: true,
     });
 
     this.vp = {
@@ -26,7 +27,7 @@ class Gl {
 
     this.renderer.setPixelRatio(this.vp.dpr());
     this.renderer.setSize(this.vp.w, this.vp.h);
-    this.renderer.setClearColor(0x000000, 1);
+    this.renderer.setClearColor(0x000000, 0);
     this.vp.container.appendChild(this.renderer.domElement);
 
     this.camera = new PerspectiveCamera(
@@ -46,6 +47,7 @@ class Gl {
     this.time = 0;
 
     handleResize(this.vp.container, this.resize.bind(this));
+    this.resize();
 
     this.init();
   }
@@ -56,7 +58,7 @@ class Gl {
 
   render() {
     if (this.paused) return;
-    this.time += 0.05;
+    this.time += 0.01;
 
     this.controls?.update();
     this.scene?.render(this.time);
@@ -64,9 +66,16 @@ class Gl {
     this.renderer.render(this.scene, this.camera);
   }
 
-  resize({ width, height }) {
+  resize(
+    { width, height } = {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    }
+  ) {
     this.vp.w = width;
     this.vp.h = height;
+    this.vp.px = this.pixel;
+    // console.log(this.vp.px);
 
     this.renderer.setSize(this.vp.w, this.vp.h);
     this.camera.aspect = this.vp.w / this.vp.h;
@@ -86,7 +95,11 @@ class Gl {
     return { w: height * (this.vp.w / this.vp.h), h: height };
   }
 
-  get pixel() {}
+  get pixel() {
+    const px = this.viewSize.w / this.vp.w;
+    const py = this.viewSize.h / this.vp.h;
+    return (px + py) / 2;
+  }
 }
 
 /** Utils */
