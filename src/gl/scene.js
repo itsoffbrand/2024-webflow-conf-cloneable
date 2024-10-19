@@ -2,6 +2,9 @@ import { Scene } from "three";
 import { Quad } from "./_quad.js";
 import { DomNode } from "./domNode.js";
 
+import { DomCube } from "./cube.js";
+import { Plane } from "./plane.js";
+
 export default class extends Scene {
   constructor(vp, {} = {}) {
     super();
@@ -13,11 +16,15 @@ export default class extends Scene {
   create() {
     const items = [...document.querySelectorAll("[data-item]")];
 
-    this.items = items.map((item) => new DomNode(item));
-    this.add(...this.items);
+    console.log(items[1]);
+    this.cube = new DomCube(items[1]);
 
-    // this.quad = new Quad();
-    // this.add(this.quad);
+    this.plane = new Plane(items[0]);
+
+    // this.items = items.map((item) => new DomNode(item));
+    // this.add(...this.items);
+
+    this.add(this.cube, this.plane);
   }
 
   render(t) {

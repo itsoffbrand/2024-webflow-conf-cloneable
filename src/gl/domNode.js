@@ -10,7 +10,7 @@ import { clientRectGl } from "../util/clientRect.js";
 export class DomNode extends Group {
   constructor(item) {
     super();
-    console.log({ item });
+    // console.log({ item });
     this.item = item;
 
     this.create();
@@ -19,7 +19,6 @@ export class DomNode extends Group {
 
   create() {
     this.mesh = new Mesh(new PlaneGeometry(1, 1), new MeshNormalMaterial());
-
     this.add(this.mesh);
   }
 

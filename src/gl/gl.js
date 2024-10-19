@@ -41,7 +41,7 @@ class Gl {
     this.vp.renderer = this.renderer;
 
     this.camera.position.set(0, 0, 2);
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
     this.paused = false;
     this.time = 0;
@@ -58,7 +58,9 @@ class Gl {
 
   render() {
     if (this.paused) return;
-    this.time += 0.01;
+    this.time += 0.005;
+
+    this.camera.position.y = -window.scrollY * this.vp.px;
 
     this.controls?.update();
     this.scene?.render(this.time);
