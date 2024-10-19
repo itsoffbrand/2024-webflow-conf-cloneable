@@ -31467,7 +31467,12 @@ void main() {
       this.item = item;
     }
     create() {
-      this.mesh = new Mesh(new BoxGeometry(0.5, 0.5, 0.5), new cube_default());
+      console.log();
+      this.mesh = new Mesh(
+        app.gl.scene.assets.cube.children[0].geometry,
+        new cube_default()
+      );
+      this.mesh.scale.set(0.2, 0.2, 0.2);
       this.initGui();
       this.add(this.mesh);
     }
@@ -34099,7 +34104,7 @@ void main() {
   var model_loader_default = (url, id) => {
     return new Promise((resolve, reject) => {
       loader.load(url, (gltf) => {
-        const result = { model: gltf.scene };
+        const result = gltf.scene;
         resolve(result);
       });
     });
@@ -34122,8 +34127,7 @@ void main() {
   // src/assets/index.js
   var baseUrl = "https://2024-webflow-conf-cloneable.vercel.app/";
   var ASSETS = {
-    //   img: null,
-    cube: baseUrl + "/build/cube.glb"
+    cube: baseUrl + "cube.glb"
   };
 
   // src/gl/util/loader.js
@@ -34159,14 +34163,13 @@ void main() {
     async create() {
       await this.load();
       const items = [...document.querySelectorAll("[data-item]")];
-      console.log(items[1]);
       this.cube = new DomCube(items[1]);
       this.plane = new Plane2(items[0]);
       this.add(this.cube, this.plane);
     }
     async load() {
-      const assets = await loadAssets();
-      console.log({ assets });
+      this.assets = await loadAssets();
+      console.log(this.assets);
     }
     render(t) {
       this.children.forEach((child) => {

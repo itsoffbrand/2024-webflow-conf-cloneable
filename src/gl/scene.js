@@ -19,7 +19,7 @@ export default class extends Scene {
     await this.load();
     const items = [...document.querySelectorAll("[data-item]")];
 
-    console.log(items[1]);
+    // console.log(items[1]);
     this.cube = new DomCube(items[1]);
 
     this.plane = new Plane(items[0]);
@@ -31,8 +31,8 @@ export default class extends Scene {
   }
 
   async load() {
-    const assets = await loadAssets();
-    console.log({ assets });
+    this.assets = await loadAssets();
+    console.log(this.assets);
   }
 
   render(t) {

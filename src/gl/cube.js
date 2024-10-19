@@ -17,7 +17,13 @@ export class DomCube extends DomNode {
   }
 
   create() {
-    this.mesh = new Mesh(new BoxGeometry(0.5, 0.5, 0.5), new Material());
+    console.log();
+    this.mesh = new Mesh(
+      app.gl.scene.assets.cube.children[0].geometry,
+      new Material()
+    );
+
+    this.mesh.scale.set(0.2, 0.2, 0.2);
 
     this.initGui();
     this.add(this.mesh);

@@ -4,7 +4,7 @@ const loader = new GLTFLoader();
 export default (url, id) => {
   return new Promise((resolve, reject) => {
     loader.load(url, (gltf) => {
-      const result = { model: gltf.scene };
+      const result = gltf.scene;
       resolve(result);
     });
   });
