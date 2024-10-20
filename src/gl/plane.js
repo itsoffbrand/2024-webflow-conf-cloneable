@@ -16,6 +16,7 @@ export class Plane extends DomNode {
     super(item);
 
     this.item = item;
+    this.item.style.border = "0px solid transparent";
   }
 
   initGui() {
@@ -59,6 +60,6 @@ export class Plane extends DomNode {
 
     this.mesh.material.uniforms.u_speed.value = this.control.guiSpeed;
     this.mesh.material.uniforms.u_color1.value = this.control.guiColor1;
-    this.mesh.material.uniforms.u_color2.value = this.control.guiColor1;
+    this.mesh.material.uniforms.u_color2.value = this.control.guiColor2;
   }
 }

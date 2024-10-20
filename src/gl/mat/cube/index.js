@@ -13,6 +13,8 @@ export default class extends ShaderMaterial {
     this.uniforms = {
       u_time: { value: options?.u_time || 0 },
       u_t1: { value: options?.u_t1 || null },
+      u_mtc1: { value: app.gl.scene.assets.matcap1 },
+      u_mtc2: { value: app.gl.scene.assets.matcap2 },
     };
 
     this.side = DoubleSide;

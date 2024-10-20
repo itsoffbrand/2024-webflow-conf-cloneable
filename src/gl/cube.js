@@ -1,10 +1,4 @@
-import {
-  Group,
-  MeshNormalMaterial,
-  PlaneGeometry,
-  Mesh,
-  BoxGeometry,
-} from "three";
+import { Mesh } from "three";
 
 import { DomNode } from "./domNode.js";
 import Material from "./mat/cube";
@@ -14,6 +8,7 @@ export class DomCube extends DomNode {
     super(item);
 
     this.item = item;
+    this.item.style.border = "0px solid transparent";
   }
 
   create() {
@@ -35,7 +30,6 @@ export class DomCube extends DomNode {
 
     for (const key in this.item.dataset) {
       if (key.substring(0, 3) === "gui") {
-        // console.log("gui", key, this.item.dataset[key]);
         this.control[key] = +this.item.dataset[key];
         this.folder.add(this.control, key, 0, 1, 0.01);
       }

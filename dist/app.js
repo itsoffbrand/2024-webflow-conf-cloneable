@@ -31437,10 +31437,10 @@ void main() {
   };
 
   // src/gl/mat/cube/vertex.vert
-  var vertex_default = "#define MPI 3.1415926535897932384626433832795\n\nuniform float u_time;\nvarying vec2 v_uv;\n\nuniform float u_color;\nuniform float u_speed;\nuniform float u_size;\n\n\nvoid main() {\n  vec3 pos = position;\n\n  pos.xyz *= u_size;\n\n  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);\n  v_uv = uv;\n}\n";
+  var vertex_default = "#define MPI 3.1415926535897932384626433832795\n\nuniform float u_time;\nvarying vec2 v_uv;\n\nuniform float u_color;\nuniform float u_speed;\nuniform float u_size;\n\nvarying vec3 v_view;\nvarying vec3 v_normal;\n\n\nvoid main() {\n  vec3 pos = position;\n\n  pos.xyz *= u_size;\n\n  vec4 transformed = modelViewMatrix * vec4(position, 1.0);\n  v_view = normalize(- transformed.xyz);\n\n  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);\n  v_uv = uv;\n  v_normal = normalize(normalMatrix * normal);\n  // v_normal = normal;\n}\n";
 
   // src/gl/mat/cube/fragment.frag
-  var fragment_default = "uniform float u_time;\n// uniform sampler2D u_t1; vec4 img = texture2D(u_t1, v_uv);\n\nvarying vec2 v_uv;\n// varying vec3 vPosition;\n\n\nvoid main() {\n\n\n  gl_FragColor = vec4(v_uv, 0., 1.);\n  // gl_FragColor = vec4(1., 0., 0., 1.);\n}\n";
+  var fragment_default = "uniform float u_time;\n// uniform sampler2D u_t1; vec4 img = texture2D(u_t1, v_uv);\n\nvarying vec2 v_uv;\nvarying vec3 v_view;\nvarying vec3 v_normal;\n\nuniform sampler2D u_mtc1; \nuniform sampler2D u_mtc2; \n\nuniform float u_color;\n\nvoid main() {\n\n  vec3 x = normalize( vec3(v_view.z, 0., -v_view.x));\n  vec3 y = cross(v_view, x);\n  vec2 fakeUv = vec2( dot(x, v_normal), dot(y, v_normal)) * .495 + .5;\n\n  vec3 img1 = texture2D(u_mtc1, fakeUv).rgb;\n  vec3 img2 = texture2D(u_mtc2, fakeUv).rgb;\n\n  vec3 color = mix(img2, img1, u_color);\n\n\n  gl_FragColor.rgb = vec3(color);\n  gl_FragColor.a = 1.;\n  // gl_FragColor = vec4(1., 0., 0., 1.);\n}\n";
 
   // src/gl/mat/cube/index.js
   var cube_default = class extends ShaderMaterial {
@@ -31451,7 +31451,9 @@ void main() {
       });
       this.uniforms = {
         u_time: { value: options?.u_time || 0 },
-        u_t1: { value: options?.u_t1 || null }
+        u_t1: { value: options?.u_t1 || null },
+        u_mtc1: { value: app.gl.scene.assets.matcap1 },
+        u_mtc2: { value: app.gl.scene.assets.matcap2 }
       };
       this.side = DoubleSide;
     }
@@ -31465,6 +31467,7 @@ void main() {
     constructor(item) {
       super(item);
       this.item = item;
+      this.item.style.border = "0px solid transparent";
     }
     create() {
       console.log();
@@ -31505,7 +31508,7 @@ void main() {
   var vertex_default2 = "#define MPI 3.1415926535897932384626433832795\n\nuniform float u_time;\nvarying vec2 v_uv;\n\n\nvoid main() {\n  vec3 pos = position;\n\n  gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);\n  v_uv = uv;\n}\n";
 
   // src/gl/mat/plane/fragment.frag
-  var fragment_default2 = "uniform float u_time;\n// uniform sampler2D u_t1; vec4 img = texture2D(u_t1, v_uv);\n\nvarying vec2 v_uv;\n// varying vec3 vPosition;\n\n\nvoid main() {\n\n\n  gl_FragColor = vec4(v_uv, 0., 1.);\n  // gl_FragColor = vec4(1., 0., 0., 1.);\n}\n";
+  var fragment_default2 = "uniform float u_time;\n// uniform sampler2D u_t1; vec4 img = texture2D(u_t1, v_uv);\n\nvarying vec2 v_uv;\n// varying vec3 vPosition;\n\nuniform float u_speed;\nuniform float u_color1;\nuniform float u_color2;\n\n\n\nconst vec3 col_red = vec3(1, 0.21176470588235294, 0.2235294117647059);\nconst vec3 col_yellow = vec3(0.7254901960784313, 1, 0.21176470588235294);\nconst vec3 col_blue = vec3(0.2784313725490196, 0.26666666666666666, 0.49019607843137253);\nconst vec3 col_brown = vec3(0.6274509803921569, 0.17254901960784313, 0.3803921568627451);\n\n\n\nvoid main() {\n\n\n\n  float vert_grad = smoothstep(0.0, 1., v_uv.y);\n\n  vec3 col1 = mix(col_red, col_blue, u_color1);\n  vec3 col2 = mix(col_yellow, col_brown, u_color2);\n\n  vec3 color = mix(col1, col2, 1. - vert_grad);\n\n  gl_FragColor.rgb = vec3(color);\n  gl_FragColor.a = 1.;\n  // gl_FragColor = vec4(1., 0., 0., 1.);\n}\n";
 
   // src/gl/mat/plane/index.js
   var plane_default = class extends ShaderMaterial {
@@ -31530,6 +31533,7 @@ void main() {
     constructor(item) {
       super(item);
       this.item = item;
+      this.item.style.border = "0px solid transparent";
     }
     initGui() {
       this.folder = gui.addFolder("Plane");
@@ -31557,7 +31561,7 @@ void main() {
     render(t) {
       this.mesh.material.uniforms.u_speed.value = this.control.guiSpeed;
       this.mesh.material.uniforms.u_color1.value = this.control.guiColor1;
-      this.mesh.material.uniforms.u_color2.value = this.control.guiColor1;
+      this.mesh.material.uniforms.u_color2.value = this.control.guiColor2;
     }
   };
 
@@ -34127,7 +34131,9 @@ void main() {
   // src/assets/index.js
   var baseUrl = "https://2024-webflow-conf-cloneable.vercel.app/";
   var ASSETS = {
-    cube: baseUrl + "cube.glb"
+    cube: baseUrl + "cube.glb",
+    matcap1: "https://cdn.prod.website-files.com/67121be6817db98db9689100/6714b7a1777a77da8999f023_2A4BA7_1B2D44_1F3768_233C81.png",
+    matcap2: "https://cdn.prod.website-files.com/67121be6817db98db9689100/6714b7a14224d988f1e84006_313131_BBBBBB_878787_A3A4A4.png"
   };
 
   // src/gl/util/loader.js
